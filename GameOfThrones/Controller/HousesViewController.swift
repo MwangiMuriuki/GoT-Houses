@@ -11,6 +11,7 @@ class HousesViewController: UIViewController {
 
     @IBOutlet weak var housesTableView: UITableView!
     var activityIndicator = UIActivityIndicatorView(style: .medium)
+
     var isAppLaunch: Bool? = true
 
     var houseList = [HousesDataClass]()
@@ -18,6 +19,7 @@ class HousesViewController: UIViewController {
     var cadetData: HousesDataClass?
     var cadetList = [HousesDataClass]()
     
+    var pageNum = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +30,7 @@ class HousesViewController: UIViewController {
             setupDispatchGroup()
         }
         else{
-            fetchData()
+            fetchData(pageNumber: pageNum)
         }
 
     }
@@ -48,12 +50,12 @@ class HousesViewController: UIViewController {
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         activityIndicator.heightAnchor.constraint(equalToConstant: 90).isActive = true
         activityIndicator.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        activityIndicator.startAnimating()
     }
 
-    func fetchData(){
-        activityIndicator.startAnimating()
+    func fetchData(pageNumber: Int){
 
-        let urlString = "\(Configs.baseURL)\(Configs.fetchHouses)?pageSize=\(20)"
+        let urlString = "\(Configs.baseURL)\(Configs.fetchHouses)?pageSize=\(30)&page=\(pageNum)"
         print("FullUrl: \(urlString)")
         if let fullUrl = URL(string: urlString){
 
@@ -67,7 +69,8 @@ class HousesViewController: UIViewController {
                 if let safeData = data {
                     if let fetchedData = self.parseHouseJSON(housesListData: safeData){
                         
-                        self.houseList = fetchedData
+//                        self.houseList = fetchedData
+                        self.houseList.append(contentsOf: fetchedData)
 
                         DispatchQueue.main.async { [self] in
                             activityIndicator.stopAnimating()
@@ -97,7 +100,6 @@ class HousesViewController: UIViewController {
         
         for cadetUrl in cadetBranches{
             dispatchGroup.enter()
-//            fetchCadetData(cadetUrl: cadetUrl)
             activityIndicator.startAnimating()
             if let fullUrl = URL(string: cadetUrl){
                 print("FullUrl: \(fullUrl)")
@@ -131,34 +133,6 @@ class HousesViewController: UIViewController {
             print("Dispatch Tasks done")
         }
     }
-
-    func fetchCadetData(cadetUrl: String){
-        activityIndicator.startAnimating()
-//        let urlString = "\(Configs.baseURL)\(Configs.fetchHouses)?pageSize=\(20)"
-//        print("FullUrl: \(urlString)")
-            if let fullUrl = URL(string: cadetUrl){
-                print("FullUrl: \(fullUrl)")
-                let task = Configs.session.dataTask(with: fullUrl) {data, response, error in
-                    if error != nil {
-                        self.activityIndicator.stopAnimating()
-                        print("List Error: \(String(describing: error))")
-                        return
-                    }
-
-                    if let safeData = data {
-                        if let fetchedData = parseCadetJSON(housesListData: safeData){
-
-//                            self.cadetBranches = fetchedData
-                            DispatchQueue.main.async { [self] in
-                                activityIndicator.stopAnimating()
-                                housesTableView.reloadData()
-                            }
-                        }
-                    }
-                }
-                task.resume()
-            }
-        }
 
     }
 
@@ -196,6 +170,23 @@ extension HousesViewController: UITableViewDelegate, UITableViewDataSource{
         navigationController?.pushViewController(detailsVC, animated: true)
         housesTableView.deselectRow(at: indexPath, animated: false)
     }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath:IndexPath) {
+
+            if isAppLaunch!{
+                let lastIndex = self.houseList.count - 1
+                   if indexPath.row == lastIndex {
+                       print("End of List")
+                       activityIndicator.startAnimating()
+                       pageNum = pageNum + 1
+                       print("Next Page: \(pageNum)")
+                       DispatchQueue.global().asyncAfter(deadline: .now() + 3, execute: { [self] in
+                           fetchData(pageNumber: pageNum)
+                       })
+                   }
+            }
+
+        }
 
 }
 
