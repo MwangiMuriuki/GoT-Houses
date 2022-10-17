@@ -18,6 +18,8 @@ class HousesViewController: UIViewController {
     var cadetBranches = [String]()
     var cadetData: HousesDataClass?
     var cadetList = [HousesDataClass]()
+    var filteredList = [HousesDataClass]()
+    var pageTitle: String?
     
     var pageNum = 1
 
@@ -27,9 +29,11 @@ class HousesViewController: UIViewController {
         setupViews()
 
         if !isAppLaunch!{
+            self.title = pageTitle
             setupDispatchGroup()
         }
         else{
+            self.title = "G.O.T Houses"
             fetchData(pageNumber: pageNum)
         }
 
@@ -150,7 +154,7 @@ class HousesViewController: UIViewController {
 
 
 
-extension HousesViewController: UITableViewDelegate, UITableViewDataSource{
+extension HousesViewController: UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return houseList.count
     }
@@ -187,6 +191,8 @@ extension HousesViewController: UITableViewDelegate, UITableViewDataSource{
             }
 
         }
+
+
 
 }
 

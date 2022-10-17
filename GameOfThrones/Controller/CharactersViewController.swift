@@ -195,12 +195,15 @@ class CharactersViewController: UIViewController {
             present(ac, animated: true, completion: nil)
         }
         else{
-            let listsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ListsViewController") as! ListsViewController
-            listsVC.tableData = alliegenceData!
-            listsVC.listTitle = "Alligences"
-            navigationController?.pushViewController(listsVC, animated: true)
+            let houseListVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HousesViewController") as! HousesViewController
+            houseListVC.isAppLaunch = false
+            houseListVC.pageTitle = "Alliegences"
+            houseListVC.cadetBranches = alliegenceData!
+            navigationController?.pushViewController(houseListVC, animated: true)
         }
     }
+
+
 
     // MARK: - Titles Tap Handler
     @objc func titlesTapHandler(tapGestureRecognizer:UITapGestureRecognizer){

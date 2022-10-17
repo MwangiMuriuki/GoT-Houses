@@ -10,21 +10,71 @@ import XCTest
 
 final class GameOfThronesTests: XCTestCase {
 
+    var testSession: URLSession!
+
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try super.setUpWithError()
+        testSession = URLSession(configuration: .default)
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        testSession = nil
+        try super.tearDownWithError()
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testValidApiCallGetsStatusCode200() throws {
+
+        let urlString = "\(Configs.baseURL)\(Configs.fetchHouses)?pageSize=\(30)&page=\(1)"
+        let url = URL(string: urlString)!
+
+        let promise = expectation(description: "Status code: 200")
+
+        let dataTask = testSession.dataTask(with: url) { _, response, error in
+        
+          if let error = error {
+            XCTFail("Error: \(error.localizedDescription)")
+            return
+          } else if let statusCode = (response as? HTTPURLResponse)?.statusCode {
+            if statusCode == 200 {
+              promise.fulfill()
+            } else {
+              XCTFail("Status code: \(statusCode)")
+            }
+          }
+        }
+        dataTask.resume()
+        wait(for: [promise], timeout: 5)
     }
+
+    func testInValidApiCallGetsStatusCode200() throws {
+
+        let urlString = "\(Configs.baseURL)\(Configs.fetchHouses)test?pageSize=\(30)&page=\(1)"
+        let url = URL(string: urlString)!
+        var statusCode: Int?
+        var responseError: Error?
+
+        let promise = expectation(description: "Status code: 200")
+
+        let dataTask = testSession.dataTask(with: url) { _, response, error in
+
+          if let error = error {
+            XCTFail("Error: \(error.localizedDescription)")
+            return
+          } else if let statusCode = (response as? HTTPURLResponse)?.statusCode {
+            if statusCode == 200 {
+              promise.fulfill()
+            } else {
+              XCTFail("Status code: \(statusCode)")
+            }
+          }
+        }
+        dataTask.resume()
+        wait(for: [promise], timeout: 5)
+
+        XCTAssertNil(responseError)
+        XCTAssertEqual(statusCode, 200)
+    }
+
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.

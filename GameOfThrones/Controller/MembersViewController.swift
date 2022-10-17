@@ -1,5 +1,5 @@
 //
-//  SwornMembersViewController.swift
+//  MembersViewController.swift
 //  GameOfThrones
 //
 //  Created by Ernest Mwangi on 14/10/2022.
@@ -24,7 +24,7 @@ class MembersViewController: UIViewController {
         setupViews()
 
         if !isBookCharacter!{
-            fetchSwornMembers()
+            fetchMembers()
         }
         else{
             fetchBookCharacters()
@@ -51,7 +51,7 @@ class MembersViewController: UIViewController {
         activityIndicator.widthAnchor.constraint(equalToConstant: 90).isActive = true
     }
 
-    func fetchSwornMembers(){
+    func fetchMembers(){
         let group = DispatchGroup()
 
         for memberUrl in passedMembersList{

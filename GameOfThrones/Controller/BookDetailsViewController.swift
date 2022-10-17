@@ -103,7 +103,7 @@ class BookDetailsViewController: UIViewController {
             present(ac, animated: true, completion: nil)
         }
         else{
-            let charactersVC = UIStoryboard(name: "SwornMembers", bundle: nil).instantiateViewController(withIdentifier: "MembersViewController") as! MembersViewController
+            let charactersVC = UIStoryboard(name: "Members", bundle: nil).instantiateViewController(withIdentifier: "MembersViewController") as! MembersViewController
             charactersVC.isBookCharacter = true
             charactersVC.pageTitle = "Characters"
             charactersVC.bookCharacters = bookCharactersUrl!
@@ -124,7 +124,7 @@ class BookDetailsViewController: UIViewController {
             present(ac, animated: true, completion: nil)
         }
         else{
-            let charactersVC = UIStoryboard(name: "SwornMembers", bundle: nil).instantiateViewController(withIdentifier: "MembersViewController") as! MembersViewController
+            let charactersVC = UIStoryboard(name: "Members", bundle: nil).instantiateViewController(withIdentifier: "MembersViewController") as! MembersViewController
             charactersVC.isBookCharacter = true
             charactersVC.pageTitle = "POV Characters"
             charactersVC.bookCharacters = bookCharactersUrl!

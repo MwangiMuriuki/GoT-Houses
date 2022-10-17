@@ -347,6 +347,7 @@ class HouseDetailsViewController: UIViewController {
         else{
             let houseListVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HousesViewController") as! HousesViewController
             houseListVC.isAppLaunch = false
+            houseListVC.pageTitle = "Cadet Branches"
             houseListVC.cadetBranches = cadetBranchesData!
             navigationController?.pushViewController(houseListVC, animated: true)
         }
@@ -366,7 +367,7 @@ class HouseDetailsViewController: UIViewController {
             present(ac, animated: true, completion: nil)
         }
         else{
-            let membersVC = UIStoryboard(name: "SwornMembers", bundle: nil).instantiateViewController(withIdentifier: "MembersViewController") as! MembersViewController
+            let membersVC = UIStoryboard(name: "Members", bundle: nil).instantiateViewController(withIdentifier: "MembersViewController") as! MembersViewController
             membersVC.pageTitle = "Sworn Members"
             membersVC.passedMembersList = swornMembersData!
             navigationController?.pushViewController(membersVC, animated: true)
